@@ -68,8 +68,9 @@ func readComand() string {
 	var command bytes.Buffer
 	var line string
 
+	//TODO add user and database names
+	fmt.Printf("~\n")
 	for true {
-		fmt.Print("~")
 		line = scanln()
 		line = strings.TrimSpace(line)
 		//command.WriteString("\n")
