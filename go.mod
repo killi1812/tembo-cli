@@ -1,4 +1,4 @@
-module tembo_cli
+module tembo-cli
 
 go 1.23.1
 
