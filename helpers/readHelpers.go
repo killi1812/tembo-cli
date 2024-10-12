@@ -81,7 +81,7 @@ func prepLines(rows *pgx.Rows) ([][]string, []int) {
 	rowLen := len(header)
 	var line []string = make([]string, rowLen)
 	var colLens []int = make([]int, rowLen)
-
+	//TODO check if header is the biggest
 	for i := 0; i < len(header); i++ {
 		line[i] = header[i].Name
 	}
