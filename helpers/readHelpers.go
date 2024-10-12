@@ -23,7 +23,7 @@ func ReadComand() string {
 	for true {
 		line = scanln()
 		line = strings.TrimSpace(line)
-		//command.WriteString("\n")
+		command.WriteString("\n")
 		command.WriteString(line)
 
 		if strings.Contains(line, ";") {
@@ -33,4 +33,8 @@ func ReadComand() string {
 	}
 
 	return command.String()
+}
+
+func PrintTable(out string) {
+
 }

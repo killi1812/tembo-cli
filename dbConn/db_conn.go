@@ -18,14 +18,14 @@ func ConnInput() *pgx.Conn {
 		fmt.Print("Input a connection string: ")
 		fmt.Scanln(&connString)
 		connString = strings.Trim(connString, "' \"")
-
 		conf, err := pgx.ParseConfig(connString)
-		conConf = *conf
 
 		if err != nil {
 			fmt.Println("❌ Bad Connection string")
 			continue
 		}
+
+		conConf = *conf
 		dbo, err := pgx.Connect(context.Background(), conConf.ConnString())
 
 		if err == nil {
@@ -44,12 +44,14 @@ func RunCliInput(db *pgx.Conn) {
 	//Command ends when ; is written
 	for true {
 
-		fmt.Printf("%s on %s ~\n", conConf.User, conConf.Database)
+		fmt.Printf("User: %s on db: %s ~\n", conConf.User, conConf.Database)
 		query := helpers.ReadComand()
 		fmt.Println("Exacuting query")
 		rez, err := db.Exec(context.Background(), query)
 		fmt.Printf("%d rows affected\n", rez.RowsAffected())
 		if err != nil {
+			fmt.Println(query)
+			fmt.Println(err)
 			fmt.Print("❌")
 		} else {
 			fmt.Print("✅")
