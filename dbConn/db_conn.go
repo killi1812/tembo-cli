@@ -40,18 +40,29 @@ func ConnInput() *pgx.Conn {
 }
 
 func RunCliInput(db *pgx.Conn) {
-	//TODO write a while that takes lines of sql code
-	//Command ends when ; is written
+	var err error
 	for true {
 
 		fmt.Printf("User: %s on db: %s ~\n", conConf.User, conConf.Database)
 		query := helpers.ReadComand()
 		fmt.Println("Exacuting query")
-		rez, err := db.Exec(context.Background(), query)
-		fmt.Printf("%d rows affected\n", rez.RowsAffected())
+
+		if strings.Contains(strings.ToLower(query), "select") {
+			rez, e := db.Query(context.Background(), query)
+			err = e
+			helpers.PrintTable(&rez)
+		} else {
+			rez, e := db.Exec(context.Background(), query)
+			err = e
+			fmt.Printf("%d rows affected\n", rez.RowsAffected())
+		}
+
+		fmt.Println("")
 		if err != nil {
 			fmt.Println(query)
 			fmt.Println(err)
+
+			fmt.Println("")
 			fmt.Print("❌")
 		} else {
 			fmt.Print("✅")
