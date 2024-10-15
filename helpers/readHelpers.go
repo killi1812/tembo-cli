@@ -75,7 +75,11 @@ func printLine(line *[]string, lenghs *[]int) {
 	fmt.Println("|")
 }
 
-func prepLines(rows *pgx.Rows) ([][]string, []int) {
+func prepLines(rows *pgx.Rows) ([][]string, []int, error) {
+	if rows == nil {
+		err := fmt.Errorf("Rows is nil")
+		return nil, nil, err
+	}
 	var lines [][]string = make([][]string, 0)
 	header := (*rows).FieldDescriptions()
 	rowLen := len(header)
@@ -105,10 +109,14 @@ func prepLines(rows *pgx.Rows) ([][]string, []int) {
 		lines = append(lines, line)
 	}
 
-	return lines, colLens
+	return lines, colLens, nil
 }
 
 func PrintTable(rows *pgx.Rows) {
-	lines, lens := prepLines(rows)
+	lines, lens, err := prepLines(rows)
+	if err != nil {
+		fmt.Print(err)
+		return
+	}
 	printLines(&lines, &lens)
 }
