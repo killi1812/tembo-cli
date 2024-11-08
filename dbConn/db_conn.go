@@ -3,6 +3,7 @@ package dbConn
 import (
 	"context"
 	"fmt"
+	"os"
 	"strings"
 	"tembo-cli/helpers"
 
@@ -11,17 +12,41 @@ import (
 
 var conConf pgx.ConnConfig
 
+const fileName = "connString.conf"
+
+func readFromConfig() (string, error) {
+	fmt.Println("Reading from config file")
+	rez, err := os.ReadFile(fileName)
+	if err != nil {
+		fmt.Println("Error reading from a file")
+		return "", err
+	}
+
+	return strings.Split(string(rez), "\n")[0], nil
+}
+
 func ConnInput() *pgx.Conn {
 	var db *pgx.Conn
 	var connString string
-	for true {
-		fmt.Print("Input a connection string: ")
-		fmt.Scanln(&connString)
-		connString = strings.Trim(connString, "' \"")
-		conf, err := pgx.ParseConfig(connString)
 
+	connString, err := readFromConfig()
+	if err != nil {
+		println(err)
+	}
+
+	for true {
+		if connString == "" {
+			fmt.Print("Input a connection string: ")
+			fmt.Scanln(&connString)
+			connString = strings.Trim(connString, " ")
+		}
+
+		println(connString)
+		conf, err := pgx.ParseConfig(connString)
 		if err != nil {
 			fmt.Println("❌ Bad Connection string")
+			println(err.Error())
+			connString = ""
 			continue
 		}
 
@@ -35,6 +60,7 @@ func ConnInput() *pgx.Conn {
 		}
 		fmt.Println("❌ failed to connect")
 		fmt.Println(err)
+		connString = ""
 	}
 	return db
 }
