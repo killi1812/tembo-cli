@@ -90,9 +90,12 @@ func prepLines(rows *pgx.Rows) ([][]string, []int, error) {
 	rowLen := len(header)
 	var line []string = make([]string, rowLen)
 	var colLens []int = make([]int, rowLen)
-	//TODO check if header is the biggest
+
 	for i := 0; i < len(header); i++ {
 		line[i] = header[i].Name
+		if l := len(line[i]); colLens[i] < l {
+			colLens[i] = l
+		}
 	}
 	lines = append(lines, line)
 
@@ -120,7 +123,6 @@ func prepLines(rows *pgx.Rows) ([][]string, []int, error) {
 func PrintTable(rows *pgx.Rows) {
 	lines, lens, err := prepLines(rows)
 	if err != nil {
-		fmt.Print(err)
 		return
 	}
 	printLines(&lines, &lens)

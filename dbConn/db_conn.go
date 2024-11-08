@@ -41,7 +41,6 @@ func ConnInput() *pgx.Conn {
 			connString = strings.Trim(connString, " ")
 		}
 
-		println(connString)
 		conf, err := pgx.ParseConfig(connString)
 		if err != nil {
 			fmt.Println("❌ Bad Connection string")
