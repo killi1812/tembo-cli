@@ -80,6 +80,11 @@ func prepLines(rows *pgx.Rows) ([][]string, []int, error) {
 		err := fmt.Errorf("Rows is nil")
 		return nil, nil, err
 	}
+
+	if err := (*rows).Err(); err != nil {
+		return nil, nil, err
+	}
+
 	var lines [][]string = make([][]string, 0)
 	header := (*rows).FieldDescriptions()
 	rowLen := len(header)
